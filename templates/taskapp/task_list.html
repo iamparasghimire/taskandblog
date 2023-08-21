@@ -1,0 +1,75 @@
+{% extends 'taskapp/base.html' %}
+{% load static %}
+{% block title%}  {% endblock title%}
+
+{% block body%} 
+
+<h1>Task List</h1>
+
+    <form method="get" action="{% url 'taskapp:task_list' %}">
+        <input type="text" placeholder="Search.." name="q" value="{{ request.GET.q }}">
+        <button type="submit">Submit</button>
+    </form>
+
+ 
+
+
+    <a class="btn btn-primary mb-3 mt-1"  href="{% url 'taskapp:task_create' %}">Create New Task</a>
+
+    <div class="row">
+
+      {% for task in tasks %}
+
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+                <div class="row px-3">
+                    <style>
+                        .profile-pic {
+                            width: 60px;
+                            height: 60px;
+                            border-radius: 50%;
+                            object-fit: contain;
+                            background-color: #E0E0E0;
+                        }
+                        
+                        .profile-details {
+                            display: flex;
+                            align-items: center;
+                        }
+                        
+                        .mb-0 {
+                            margin-bottom: 0;
+                        }
+                    </style>
+          
+                    <div class="profile-details">
+                      {% if task.creator.profile.image %}
+                          <img class="profile-pic mr-3" src="{{ task.creator.profile.image.url }}" alt="Profile Picture">
+                      {% else %}
+                          <img class="profile-pic mr-3" src="{% static 'demo.jpg' %}" alt="Default Profile Picture">
+                      {% endif %}
+                      <div>
+          
+                            <h3 class="mb-0 font-weight-normal">{{task.creator}}</h3>
+                        </div>
+                    </div>
+                </div>
+
+              <h5 class="card-title">{{ task.title }} </h5>
+              <p class="card-text">{{task.description}}</p>
+              {% if user.is_authenticated and user == task.creator%}
+              <a href="{% url 'taskapp:task_update' task.id %}" class="btn btn-primary">Edit</a>
+              <a href="{% url 'taskapp:task_delete' task.id %}" class="btn btn-primary">Delete</a>
+                  {% endif %}
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <h3>No task found. </h3>
+        {% endfor %}
+
+      </div>
+
+
+    {% endblock body%} 

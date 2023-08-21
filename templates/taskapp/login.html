@@ -1,0 +1,26 @@
+{% extends 'taskapp/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+
+
+<div class = 'container'>
+    <div class="card">
+    <div class="card-body">
+
+   <h2>Login</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit">Login</button>
+    
+
+  </form>
+  <a class="primary-btn" href="{% url 'taskapp:signup' %}">Create User</a>
+  <a class="primary-btn" href="{% url 'taskapp:password_reset' %}">Forget Password</a>
+</div>
+
+</div>
+</div>
+
+{% endblock body %}

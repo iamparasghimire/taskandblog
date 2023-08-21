@@ -1,0 +1,17 @@
+{% extends 'taskapp/base.html' %}
+
+
+    {% block title %}  {% endblock title %}
+    {% block body %}
+        <h1>Delete Blog</h1>
+    <p>Are you sure you want to delete "{{ blog.name }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, delete</button>
+        <a href="{% url 'taskapp:blog' %}">Cancel</a>
+    </form>
+    {% endblock body %}
+
+
+
+

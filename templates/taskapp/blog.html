@@ -1,0 +1,104 @@
+
+{% extends 'taskapp/base.html' %}
+
+{% load static %}
+
+{% block body %}
+
+
+<h1>Blog List</h1>
+
+    <form method="get" action="{% url 'taskapp:blog' %}">
+        <input type="text" placeholder="Search.." name="q" value="{{ request.GET.q }}">
+        <button type="submit">Submit</button>
+    </form>
+
+ 
+
+
+
+
+<div class="container">
+<a class="btn btn-primary mb-3 mt-1"  href="{% url 'taskapp:blog_create' %}">Create</a>
+
+
+ 
+
+
+<div class="row">
+  {% for blog in blogs %}
+  <div class="col-sm-6">
+    <div class="card">
+
+      <div class="card-body">
+        
+        <div class="row px-3">
+          <style>
+              .profile-pic {
+                  width: 60px;
+                  height: 60px;
+                  border-radius: 50%;
+                  object-fit: contain;
+                  background-color: #E0E0E0;
+              }
+              
+              .profile-details {
+                  display: flex;
+                  align-items: center;
+              }
+              
+              .mb-0 {
+                  margin-bottom: 0;
+              }
+          </style>
+
+          <div class="profile-details">
+            {% if blog.creator.profile.image %}
+                <img class="profile-pic mr-3" src="{{ blog.creator.profile.image.url }}" alt="Profile Picture">
+            {% else %}
+                <img class="profile-pic mr-3" src="{% static '/demo.jpg' %}" alt="Default Profile Picture">
+            {% endif %}
+      
+            <div>
+
+                  <h3 class="mb-0 font-weight-normal">{{blog.creator}}</h3>
+              </div>
+          </div>
+
+
+      
+          
+
+          
+      </div>
+      
+      
+
+
+        <h5 class="card-title"></h5>
+        <a href="{% url 'taskapp:comment_list' blog.id %}" class="title">{{blog.name}}</a>
+        <p class="card-text">{{blog.tagline}}</p>
+        {% if user.is_authenticated and user == blog.creator %}
+        <a href="{% url 'taskapp:blog_update' slug=blog.slug %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'taskapp:blog_delete' slug=blog.slug %}" class="btn btn-primary">Delete</a>
+      {% endif %}
+      </div>
+ 
+      </br>
+
+
+ 
+    </div>
+  </div>
+  {% empty %}
+  <h3>No blog found </h3>
+
+  {% endfor %}
+
+</div>
+</div>
+
+
+
+
+{%  endblock body%}

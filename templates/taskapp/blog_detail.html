@@ -1,0 +1,118 @@
+{% extends 'taskapp/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}  {{ blog.title }} {% endblock title %}
+
+{% block body %}
+
+    <div class="col-sm-6">
+        <div class="card">
+    
+          <div class="card-body">
+            
+            <div class="row px-3">
+              <style>
+                  .profile-pic {
+                      width: 60px;
+                      height: 60px;
+                      border-radius: 50%;
+                      object-fit: contain;
+                      background-color: #E0E0E0;
+                  }
+                  
+                  .profile-details {
+                      display: flex;
+                      align-items: center;
+                  }
+                  
+                  .mb-0 {
+                      margin-bottom: 0;
+                  }
+              </style>
+    
+              <div class="profile-details">
+                {% if blog.creator.profile.image %}
+                    <img class="profile-pic mr-3" src="{{ blog.creator.profile.image.url }}" alt="Profile Picture">
+                {% else %}
+                    <img class="profile-pic mr-3" src="{% static '/demo.jpg' %}" alt="Default Profile Picture">
+                {% endif %}
+          
+                <div>
+    
+                      <h3 class="mb-0 font-weight-normal">{{blog.creator}}</h3>
+                  </div>
+              </div>
+           
+          </div>
+
+          
+          
+    
+    <h1>{{ blog.name }}</h1>
+    <p>{{ blog.tagline }}</p>
+    
+ 
+
+
+
+    <h1>Comment List</h1>
+    <form id="add-comment-form">
+        {% csrf_token %}
+        <input type="hidden" name="blog_id" value="{{ blog.id }}">  <!-- Add this line -->
+        {{ form }}
+        <button type="submit">Add Comment</button>
+    </form>
+    
+
+    <ul id="comment-list">
+        {% for comment in blog.comments.all %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    {{ comment.author }} - {{ comment.created_at }}
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ comment.content }}</p>
+                </div>
+            </div>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+
+     </ul>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#add-comment-form").submit(function(event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'taskapp:add_comment' %}",
+                    data: formData,
+                    success: function(response) {
+                        var newComment = '<li class="card mb-3">' +
+                                         '<div class="card-header">' + response.author + ' - ' + response.created_at + '</div>' +
+                                         '<div class="card-body"><p class="card-text">' + response.content + '</p></div>' +
+                                         '</li>';
+                        $("#comment-list").append(newComment);  
+                        $("#add-comment-form")[0].reset();
+                    },
+                    error: function(error) {
+                        console.error("Error adding content:", error);
+                    }
+                });
+            });
+        });
+        </script>
+
+
+
+
+    </div>
+</div>
+</div>
+
+        
+        {% endblock body %}
+
